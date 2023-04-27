@@ -18,7 +18,7 @@ To set up and run the application on your local machine, follow these steps:
 
 1. Clone the repository to your local machine.
 ```bash
-git clone https://github.com/mictott/Streamlit_photometry.git
+git clone https://github.com/mictott/FiberFlow.git
 ```
 
 2. Change into the repository directory.
