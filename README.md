@@ -24,7 +24,7 @@ git clone https://github.com/mictott/Streamlit_photometry.git
 2. Change into the repository directory.
 
 ```bash
-cd /your/path/to/Streamlit_photometry
+cd /your/path/to/FiberFlow
 ```
 
 3. Create a virtual environment and activate it (recommended).
