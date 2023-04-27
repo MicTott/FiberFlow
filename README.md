@@ -60,4 +60,5 @@ Enjoy exploring your calcium imaging data!
 
 - [ ] Add a box to add subject name, include in output file names.
 - [ ] Add a checkbox for exporting high quality images. 
+- [ ] Have outfiles save to new "output" folder.
 - [ ] Maybe one day: add batch processing
