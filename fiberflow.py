@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
 import numpy as np
 from scipy.signal import medfilt, butter, filtfilt
 from scipy.stats import linregress
@@ -118,6 +119,14 @@ def load_data(file, is_event=False):
         st.session_state[key] = data
     return st.session_state[key]
 
+def save_plot(fig, subject_ID, plot_name,  scale_factor=4.17):
+    output_dir = os.path.join("output", subject_ID)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    file_path = os.path.join(output_dir, f"{subject_ID}_{plot_name}.png")
+    pio.write_image(fig, file_path, scale=scale_factor)
+
 def export_averaged_trials(results, subject_ID):
     output_dir = os.path.join('output', subject_ID)
     if not os.path.exists(output_dir):
@@ -143,6 +152,7 @@ def visualize_data(df, subject_ID):
     fig.update_layout(title=f"{subject_ID}: Raw Data")
 
     # Display the plot
+    save_plot(fig, subject_ID, "raw_data")
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -170,6 +180,7 @@ def preprocess_and_plot(df, subject_ID, fs=30):
     # Store the plot in the session state
     st.session_state['preprocessed_plot'] = fig
 
+    save_plot(fig, subject_ID, "preprocessed_data")
     st.plotly_chart(fig, use_container_width=True)
 
     return df
@@ -262,6 +273,7 @@ def plot_events(df, events_df, subject_ID):
         )
 
     # Display the plot
+    save_plot(fig, subject_ID, "preprocessed_data_with_events")
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -322,6 +334,7 @@ def average_trials(df, events_df, pre_time, post_time, subject_ID):
         st.plotly_chart(fig, use_container_width=True)
 
     # Store the results in the session state
+    save_plot(fig, subject_ID, f"{event}_averaged_output_data_with_SEM")
     st.session_state['averaged_trials'] = results
 
     return results
