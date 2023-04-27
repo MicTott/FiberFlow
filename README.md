@@ -55,3 +55,9 @@ Now, the application should be running on your local machine. Open your web brow
 6. Use the checkboxes and buttons to export preprocessed data, averaged trials, and results to CSV files.
 7. 
 Enjoy exploring your calcium imaging data!
+
+## Future plans
+
+- [ ] Add a box to add subject name, include in output file names.
+- [ ] Add a checkbox for exporting high quality images. 
+- [ ] Maybe one day: add batch processing
