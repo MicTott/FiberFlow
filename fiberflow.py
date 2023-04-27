@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -118,10 +119,23 @@ def load_data(file, is_event=False):
     return st.session_state[key]
 
 def export_averaged_trials(results, subject_ID):
-    for event, result_df in results.items():
-        file_name = f"{subject_ID}_{event}_Averaged_trials.csv"
-        result_df.to_csv(file_name, index=False)
-        st.success(f"{file_name} has been exported.")
+    output_dir = os.path.join('output', subject_ID)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for event, averaged_data in results.items():
+        output_path = os.path.join(output_dir, f'{subject_ID}_{event}_averaged_data.csv')
+        averaged_data.to_csv(output_path, index=False)
+        st.success(f"Averaged data for {event} has been exported to '{output_path}'.")
+
+def export_new_data(df, subject_ID):
+    output_dir = os.path.join('output', subject_ID)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_path = os.path.join(output_dir, f'{subject_ID}_proprocessed_data.csv')
+    df.to_csv(output_path, index=False)
+    st.success(f"New data has been exported to '{output_path}'.")
 
 def visualize_data(df, subject_ID):
     # Create line plots for signal and control data
@@ -204,13 +218,6 @@ def deltaF_F(GCaMP_corrected, denoised, fs):
     GCaMP_dF_F = GCaMP_corrected/baseline_fluorescence
     
     return GCaMP_dF_F
-
-
-def export_new_data(df):
-    # Export the new data along with the old data to a CSV file
-    df.to_csv(f'{subject_ID}_proprocessed_data.csv', index=False)
-    st.success("New data has been exported to 'new_data.csv'.")
-
 
 def plot_events(df, events_df, subject_ID):
     # Create a line plot for the output data
