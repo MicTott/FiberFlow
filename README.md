@@ -29,8 +29,8 @@ cd /your/path/to/Streamlit_photometry
 
 3. Create a virtual environment and activate it (recommended).
 ```bash
-python3 -m venv venv
-source venv/bin/activate  # For Windows: venv\Scripts\activate
+conda create -n fiberflow python=3
+conda activate fiberflow
 ```
 
 4. Install the required packages.
@@ -40,10 +40,11 @@ pip install -r requirements.txt
 
 5. Run the Streamlit application.
 ```bash
-streamlit run app.py
+streamlit run fiberflow.py
 ```
 
 Now, the application should be running on your local machine. Open your web browser and go to the provided URL (usually http://localhost:8501).
+
 
 ## Usage
 1. Upload a CSV file containing raw data with 'time', 'signal', and 'control' columns using the file uploader.
