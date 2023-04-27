@@ -19,6 +19,9 @@ def reset_session_state():
 def main():
     st.title("FiberFlow: Fiber Photometry Procesing, Visualization, and Analysis")
 
+    # Add input for the subject name
+    subject_ID = st.text_input("Enter the subject ID (e.g., Rat1):")
+
     # Upload the CSV file
     csv_file = st.file_uploader("Upload a CSV file", type=["csv"])
 
@@ -35,7 +38,7 @@ def main():
             df['time'] = df['time'] - df['time'].iloc[0]
 
             # Visualize the data using line plots
-            visualize_data(df)
+            visualize_data(df, subject_ID)
 
             # Check if the plots are present in session state
             if st.session_state.preprocessed_plot is not None:
@@ -43,7 +46,7 @@ def main():
 
             # add a button to preprocessed control data from signal data and plot the output
             if st.button("Preprocess Data and Plot", key='preprocess'):
-                preprocess_df = preprocess_and_plot(df)
+                preprocess_df = preprocess_and_plot(df, subject_ID)
                 st.session_state.preprocess_df = preprocess_df
 
             # Check if the output dataframe is in session state
@@ -51,8 +54,8 @@ def main():
 
                 #  Add a checkbox to export the new data along with the old data
                 preprocess_df = st.session_state.preprocess_df
-                if st.checkbox("Export New Data"):
-                    export_new_data(preprocess_df)
+                if st.checkbox("Export Processed Data"):
+                    export_new_data(preprocess_df, subject_ID)
 
             # Upload the events CSV file
             events_csv_file = st.file_uploader("Upload an events CSV file", type=["csv"])
@@ -72,7 +75,7 @@ def main():
 
                         # Add a button to plot events with shaded regions only if output data is present
                         if st.button("Plot Events", key='plot_events'):
-                            plot_events(df, events_df)
+                            plot_events(df, events_df, subject_ID)
                             st.session_state.events_df = events_df
 
                         # Check if the events dataframe is in session state
@@ -91,12 +94,12 @@ def main():
                                 st.plotly_chart(st.session_state['average_trial_plot'], use_container_width=True)
 
                             if st.button("Average Trials and Plot Output", key='average_trials'):
-                                results_df = average_trials(df, events_df, pre_time, post_time)  
+                                results_df = average_trials(df, events_df, pre_time, post_time, subject_ID)  
 
                             if st.session_state.averaged_trials is not None:
                                 results_df = st.session_state.averaged_trials
                                 if st.button(f"Export Results to CSV", key='export_results'):
-                                    export_averaged_trials(results_df)
+                                    export_averaged_trials(results_df, subject_ID)
 
                 else:
                     st.error("The uploaded events CSV file does not contain the required columns: 'events', 'start', and 'stop'.")
@@ -114,21 +117,22 @@ def load_data(file, is_event=False):
         st.session_state[key] = data
     return st.session_state[key]
 
-def export_averaged_trials(results):
+def export_averaged_trials(results, subject_ID):
     for event, result_df in results.items():
-        file_name = f"{event}_Averaged_trials.csv"
+        file_name = f"{subject_ID}_{event}_Averaged_trials.csv"
         result_df.to_csv(file_name, index=False)
         st.success(f"{file_name} has been exported.")
 
-def visualize_data(df):
+def visualize_data(df, subject_ID):
     # Create line plots for signal and control data
     fig = px.line(df, x='time', y=['signal', 'control'], title="Signal and Control Data", labels={"value": "Data", "variable": "Type"})
+    fig.update_layout(title=f"{subject_ID}: Raw Data")
 
     # Display the plot
     st.plotly_chart(fig, use_container_width=True)
 
 
-def preprocess_and_plot(df, fs=30):
+def preprocess_and_plot(df, subject_ID, fs=30):
 
     time_seconds = df['time'].values
     GCaMP_raw = df['signal'].values
@@ -147,6 +151,7 @@ def preprocess_and_plot(df, fs=30):
     st.session_state['preprocessed'] = df['Delta_F']
 
     fig = px.line(df, x='time', y='Delta_F', title="Preprocessed Data", labels={"value": "Delta F/F", "variable": "Type"})
+    fig.update_layout(title=f"{subject_ID}: Preprocessed Data")
 
     # Store the plot in the session state
     st.session_state['preprocessed_plot'] = fig
@@ -203,13 +208,14 @@ def deltaF_F(GCaMP_corrected, denoised, fs):
 
 def export_new_data(df):
     # Export the new data along with the old data to a CSV file
-    df.to_csv('new_data.csv', index=False)
+    df.to_csv(f'{subject_ID}_proprocessed_data.csv', index=False)
     st.success("New data has been exported to 'new_data.csv'.")
 
 
-def plot_events(df, events_df):
+def plot_events(df, events_df, subject_ID):
     # Create a line plot for the output data
     fig = px.line(df, x='time', y='Delta_F', title="Output Data with Events", labels={"value": "Data", "variable": "Type"})
+    fig.update_layout(title=f"{subject_ID}: Preprocessed Data with Events")
 
     # Store the plot in the session state
     st.session_state['events_plot'] = fig
@@ -253,7 +259,7 @@ def plot_events(df, events_df):
 
 
 
-def average_trials(df, events_df, pre_time, post_time):
+def average_trials(df, events_df, pre_time, post_time, subject_ID):
     unique_events = events_df['events'].unique()
     results = {}
 
@@ -301,7 +307,7 @@ def average_trials(df, events_df, pre_time, post_time):
                                  fillcolor='rgba(68, 68, 68, 0.3)',
                                  fill='tonexty'))
 
-        fig.update_layout(title=f'{event} Averaged Output Data with SEM',
+        fig.update_layout(title=f'{subject_ID}: {event} Averaged Output Data with SEM',
                           xaxis_title='Time',
                           yaxis_title='Delta F/F',
                           legend_title='Events')
