@@ -1,7 +1,7 @@
 # Fiber photometry Visualization and analysis
 This Streamlit application allows users to visualize, preprocess, and analyze calcium imaging data by uploading CSV files. The application is designed to handle both raw data and event data, providing an interactive interface for visualizing and exporting the results.
 
-[streamlit-app-2023-04-27-14-04-20.webm](https://user-images.githubusercontent.com/32395683/234955197-ad0c0fd5-9eef-479a-b79d-f037bb0f9162.webm)
+[streamlit-fiberflow-2023-04-28-11-04-63.webm](https://user-images.githubusercontent.com/32395683/235192757-a65ad1d9-6ab4-4a2b-be9d-25f1099925e1.webm)
 
 ## Features
 Upload raw data CSV file containing 'time', 'signal', and 'control' columns.
