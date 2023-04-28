@@ -300,7 +300,7 @@ def average_trials(df, events_df, pre_time, post_time, subject_ID):
         sem_df = pd.DataFrame(sem_data, columns=['SEM'])
         trial_df = pd.DataFrame(np.column_stack(event_data), columns=[f'trial_{i+1}' for i in range(len(event_data))])
 
-        result_df = pd.concat([df['time'][:len(avg_df)], avg_df, sem_df, trial_df], axis=1)
+        result_df = pd.concat([df['time'][:len(avg_df)]-pre_time, avg_df, sem_df, trial_df], axis=1)
         results[event] = result_df
 
         # Plot the averaged output data with SEM as shaded error bars
