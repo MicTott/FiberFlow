@@ -59,8 +59,8 @@ Enjoy exploring your calcium imaging data!
 
 ## Future plans
 
-- [ ] Time zero for averaged trial data should occur at time of the event. 
-- [ ] Add a box to add subject name, include in output file names.
+- [X] Time zero for averaged trial data should occur at time of the event. 
+- [X] Add a box to add subject name, include in output file names.
 - [ ] Add a checkbox for exporting high quality images. 
-- [ ] Have outfiles save to new "output" folder.
+- [X] Have outfiles save to new "output" folder.
 - [ ] Maybe one day: add batch processing
