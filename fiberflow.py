@@ -119,13 +119,14 @@ def load_data(file, is_event=False):
         st.session_state[key] = data
     return st.session_state[key]
 
-def save_plot(fig, subject_ID, plot_name,  scale_factor=4.17):
+def save_plot(fig, subject_ID, plot_name,  scale_factor=3):
     output_dir = os.path.join("output", subject_ID)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     file_path = os.path.join(output_dir, f"{subject_ID}_{plot_name}.png")
     pio.write_image(fig, file_path, scale=scale_factor)
+    st.success(f"{subject_ID}_{plot_name}.png has been exported to file_path.")
 
 def export_averaged_trials(results, subject_ID):
     output_dir = os.path.join('output', subject_ID)
@@ -152,8 +153,12 @@ def visualize_data(df, subject_ID):
     fig.update_layout(title=f"{subject_ID}: Raw Data")
 
     # Display the plot
-    save_plot(fig, subject_ID, "raw_data")
     st.plotly_chart(fig, use_container_width=True)
+
+    # Add a checkbox to save the raw data plot
+    if st.checkbox("Save Raw Data Plot"):
+        save_plot(fig, subject_ID, "raw_data")
+        
 
 
 def preprocess_and_plot(df, subject_ID, fs=30):
@@ -179,9 +184,11 @@ def preprocess_and_plot(df, subject_ID, fs=30):
 
     # Store the plot in the session state
     st.session_state['preprocessed_plot'] = fig
-
-    save_plot(fig, subject_ID, "preprocessed_data")
     st.plotly_chart(fig, use_container_width=True)
+
+    # Add a checkbox to save the processed data plot
+    if st.checkbox("Save Processed Data Plot"):
+        save_plot(fig, subject_ID, "preprocessed_data")
 
     return df
 
@@ -273,8 +280,11 @@ def plot_events(df, events_df, subject_ID):
         )
 
     # Display the plot
-    save_plot(fig, subject_ID, "preprocessed_data_with_events")
     st.plotly_chart(fig, use_container_width=True)
+
+    # Add a checkbox to save the events plot
+    if st.checkbox("Save Events Data Plot"):
+        save_plot(fig, subject_ID, "preprocessed_data_with_events")
 
 
 
@@ -300,7 +310,7 @@ def average_trials(df, events_df, pre_time, post_time, subject_ID):
         sem_df = pd.DataFrame(sem_data, columns=['SEM'])
         trial_df = pd.DataFrame(np.column_stack(event_data), columns=[f'trial_{i+1}' for i in range(len(event_data))])
 
-        result_df = pd.concat([df['time'][:len(avg_df)], avg_df, sem_df, trial_df], axis=1)
+        result_df = pd.concat([df['time'][:len(avg_df)] - pre_time, avg_df, sem_df, trial_df], axis=1)
         results[event] = result_df
 
         # Plot the averaged output data with SEM as shaded error bars
@@ -336,6 +346,11 @@ def average_trials(df, events_df, pre_time, post_time, subject_ID):
     # Store the results in the session state
     save_plot(fig, subject_ID, f"{event}_averaged_output_data_with_SEM")
     st.session_state['averaged_trials'] = results
+
+
+    # Add a checkbox to save the trials data plot
+    if st.checkbox("Save Trials Data Plot"):
+        save_plot(fig, subject_ID, f"{event}_averaged_output_data_with_SEM")
 
     return results
 
