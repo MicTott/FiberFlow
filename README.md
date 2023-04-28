@@ -4,14 +4,15 @@ This Streamlit application allows users to visualize, preprocess, and analyze ca
 [streamlit-fiberflow-2023-04-28-11-04-63.webm](https://user-images.githubusercontent.com/32395683/235192757-a65ad1d9-6ab4-4a2b-be9d-25f1099925e1.webm)
 
 ## Features
-Upload raw data CSV file containing 'time', 'signal', and 'control' columns.
-Preprocess the data by applying denoising, debleaching, and motion correction.
-Calculate the delta F/F for the preprocessed data.
-Visualize the preprocessed data using line plots.
-Upload event data CSV file containing 'events', 'start', and 'stop' columns.
-Overlay events on the preprocessed data plot with shaded regions.
-Average output data across trials based on events and specified time ranges.
-Export preprocessed data, averaged trials, and results to CSV files.
+- Upload raw data CSV file containing 'time', 'signal', and 'control' columns.
+- Preprocess the data by applying denoising, debleaching, and motion correction.
+- Calculate the delta F/F for the preprocessed data.
+- Visualize the preprocessed data using line plots.
+- Upload event data CSV file containing 'events', 'start', and 'stop' columns.
+- Overlay events on the preprocessed data plot with shaded regions.
+- Average output data across trials based on events and specified time ranges.
+- Automatically exports all generated figures.
+- Export preprocessed data, averaged trials, and results to CSV files.
 
 ## Installation
 To set up and run the application on your local machine, follow these steps:
