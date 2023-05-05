@@ -11,7 +11,15 @@ import plotly.express as px
 # import FiberFlow functions
 from utils import *
 
-def main():
+def visualize_data(df, subject_ID):
+    # Create line plots for signal and control data
+    fig = px.line(df, x='time', y=['signal', 'control'], title="Signal and Control Data", labels={"value": "Data", "variable": "Type"})
+    fig.update_layout(title=f"{subject_ID}: Raw Data")
+
+    # Display the plot
+    save_plot(fig, subject_ID, "raw_data")
+    st.plotly_chart(fig, use_container_width=True)
+
 def preprocess_and_plot(df, subject_ID, fs=30):
 
     time_seconds = df['time'].values
@@ -35,11 +43,9 @@ def preprocess_and_plot(df, subject_ID, fs=30):
 
     # Store the plot in the session state
     st.session_state['preprocessed_plot'] = fig
-    st.plotly_chart(fig, use_container_width=True)
 
-    # Add a checkbox to save the processed data plot
-    if st.checkbox("Save Processed Data Plot"):
-        save_plot(fig, subject_ID, "preprocessed_data")
+    save_plot(fig, subject_ID, "preprocessed_data")
+    st.plotly_chart(fig, use_container_width=True)
 
     return df
 
@@ -131,11 +137,8 @@ def plot_events(df, events_df, subject_ID):
         )
 
     # Display the plot
+    save_plot(fig, subject_ID, "preprocessed_data_with_events")
     st.plotly_chart(fig, use_container_width=True)
-
-    # Add a checkbox to save the events plot
-    if st.checkbox("Save Events Data Plot"):
-        save_plot(fig, subject_ID, "preprocessed_data_with_events")
 
 
 
@@ -161,7 +164,7 @@ def average_trials(df, events_df, pre_time, post_time, subject_ID):
         sem_df = pd.DataFrame(sem_data, columns=['SEM'])
         trial_df = pd.DataFrame(np.column_stack(event_data), columns=[f'trial_{i+1}' for i in range(len(event_data))])
 
-        result_df = pd.concat([df['time'][:len(avg_df)] - pre_time, avg_df, sem_df, trial_df], axis=1)
+        result_df = pd.concat([df['time'][:len(avg_df)]-pre_time, avg_df, sem_df, trial_df], axis=1)
         results[event] = result_df
 
         # Plot the averaged output data with SEM as shaded error bars
@@ -197,11 +200,6 @@ def average_trials(df, events_df, pre_time, post_time, subject_ID):
     # Store the results in the session state
     save_plot(fig, subject_ID, f"{event}_averaged_output_data_with_SEM")
     st.session_state['averaged_trials'] = results
-
-
-    # Add a checkbox to save the trials data plot
-    if st.checkbox("Save Trials Data Plot"):
-        save_plot(fig, subject_ID, f"{event}_averaged_output_data_with_SEM")
 
     return results
 
