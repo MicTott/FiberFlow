@@ -41,7 +41,7 @@ pip install -r requirements.txt
 
 5. Run the Streamlit application.
 ```bash
-streamlit run fiberflow.py
+streamlit run main.py
 ```
 
 Now, the application should be running on your local machine. Open your web browser and go to the provided URL (usually http://localhost:8501).
